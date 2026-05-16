@@ -1,0 +1,3 @@
+pydantic-ai-slim[mcp]
+pydantic-ai-slim[groq]
+python-dotenv
