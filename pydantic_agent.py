@@ -1,36 +1,19 @@
-"""
-Pydantic AI agent connected to the weather MCP server.
-Uses Claude Haiku to process natural language queries
-and calls the get_weather MCP tool to fetch real weather data.
-"""
 import asyncio
-from pathlib import Path
-from dotenv import dotenv_values
+from dotenv import load_dotenv
 from pydantic_ai import Agent
-from pydantic_ai.mcp import MCPToolset, StdioTransport
-from pydantic_ai.models.anthropic import AnthropicModel
-from pydantic_ai.providers.anthropic import AnthropicProvider
+from pydantic_ai.mcp import MCPServerStdio
 
-_env = dotenv_values(Path(__file__).parent / ".env")
-_api_key = _env.get("ANTHROPIC_API_KEY")
+load_dotenv()
 
-server = MCPToolset(
-    StdioTransport(
-        command=r"C:\Users\2403682\OneDrive - Cognizant\Desktop\MCP\mcp_server\venv\Scripts\python.exe",
-        args=[
-            r"C:\Users\2403682\OneDrive - Cognizant\Desktop\MCP\mcp_server\weather.py"
-        ],
-    ),
-    init_timeout=30.0,
-)
-
-model = AnthropicModel(
-    "claude-haiku-4-5-20251001",
-    provider=AnthropicProvider(api_key=_api_key),
+server = MCPServerStdio(
+    command=r"C:\Users\2403682\OneDrive - Cognizant\Desktop\MCP\mcp_server\venv\Scripts\python.exe",
+    args=[
+        r"C:\Users\2403682\OneDrive - Cognizant\Desktop\MCP\mcp_server\weather.py"
+    ],
 )
 
 agent = Agent(
-    model=model,
+    model="groq:llama-3.3-70b-versatile",
     toolsets=[server],
 )
 
