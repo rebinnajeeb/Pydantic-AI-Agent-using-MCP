@@ -10,26 +10,33 @@ server = MCPServerStdio(
     args=[r"C:\path\to\weather.py"]
 )
 
-# create agent WITH mcp server
+# create agent
 agent = Agent(
     role="Weather Assistant",
-    goal="Help users with weather information",
-    backstory="You are a helpful assistant who knows about weather.",
-    mcps=[server]          # ← give MCP server here (not toolsets!)
+    goal="Help users with weather and general questions",
+    backstory="You are a helpful assistant. Use weather tool when needed.",
+    mcps=[server]
 )
 
-# create task
-task = Task(
-    description="What is the current weather in Chennai?",
-    expected_output="Weather details for Chennai",
-    agent=agent
-)
+print("🤖 Chat with me! (type 'quit' to exit)")
 
-# create crew and run
-crew = Crew(
-    agents=[agent],
-    tasks=[task]
-)
+while True:
+    user_input = input("\nYou: ")
 
-result = crew.kickoff()
-print(result)
+    if user_input.lower() == "quit":
+        break
+
+    # task is now dynamic — whatever user types!
+    task = Task(
+        description=user_input,        # ← user question goes here
+        expected_output="A helpful answer",
+        agent=agent
+    )
+
+    crew = Crew(
+        agents=[agent],
+        tasks=[task]
+    )
+
+    result = crew.kickoff()
+    print(f"Bot: {result}")
