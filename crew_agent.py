@@ -1,8 +1,14 @@
-from crewai import Agent, Task, Crew
+from crewai import Agent, Task, Crew, LLM
 from crewai.mcp import MCPServerStdio
 from dotenv import load_dotenv
 
 load_dotenv()
+
+# define the LLM
+llm = LLM(
+    model="groq/llama-3.3-70b-versatile",  # ← groq model
+    api_key="your_groq_api_key_here"        # ← or put in .env
+)
 
 # connect to your weather MCP server
 server = MCPServerStdio(
@@ -10,12 +16,13 @@ server = MCPServerStdio(
     args=[r"C:\path\to\weather.py"]
 )
 
-# create agent
+# create agent WITH llm
 agent = Agent(
     role="Weather Assistant",
     goal="Help users with weather and general questions",
     backstory="You are a helpful assistant. Use weather tool when needed.",
-    mcps=[server]
+    mcps=[server],
+    llm=llm             # ← give LLM here
 )
 
 print("🤖 Chat with me! (type 'quit' to exit)")
@@ -26,9 +33,8 @@ while True:
     if user_input.lower() == "quit":
         break
 
-    # task is now dynamic — whatever user types!
     task = Task(
-        description=user_input,        # ← user question goes here
+        description=user_input,
         expected_output="A helpful answer",
         agent=agent
     )
