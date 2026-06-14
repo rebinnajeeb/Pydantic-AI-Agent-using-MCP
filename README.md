@@ -1,4 +1,4 @@
-# Pydantic AI Weather Agent
+# Pydantic AI Weather Agent Using MCP
 
 A conversational AI agent built with Pydantic AI that connects to a local weather MCP server. It uses Groq's Llama 3.3 70B model to understand natural language weather queries and fetches real weather data via the `get_weather` MCP tool.
 
